@@ -6,10 +6,11 @@ import { DraftSummonerProfile } from '../1_draft-summoner-profile';
 // https://v4.mui.com/styles/api/#examples-2
 const useStyles = makeStyles(theme => ({
     root: {
-
+        display: 'block',
+        width: '100%',
+        margin: 0,
     }
 }));
-
 export interface DraftSummonerProfilesProps {
     profiles: DraftSummonerProfile[];
 }
@@ -25,10 +26,12 @@ export const DraftSummonerProfiles: React.FC<DraftSummonerProfilesProps> = ({
     const classes = useStyles();
 
     return (
-        <Card elevation='0' p={1}>
-            <pre>
-                {JSON.stringify(profiles, undefined, 4)}
-            </pre>
-        </Card>
+        <div className={classes.root}>
+            <Card width={1000} elevation='0' p={1}>
+                {profiles.map(profile => (
+                    <DraftSummonerProfile key={profile.summonerName} profile={profile} />
+                ))}
+            </Card>
+        </div>
     );
 }
