@@ -7,8 +7,6 @@ import { GetParticipantProfilesInput } from './participant-profiles.graphql-type
 import {Card} from "../common/core/components";
 
 export interface Participant {
-    division: Client.Division;
-    tier: Client.Tier;
     summonerName: string;
     role?: Client.Role;
     championId?: Client.ChampionId;
@@ -69,8 +67,7 @@ export const ParticipantProfiles: React.FC<ParticipantProfilesProps> = ({
                 summonerName: participant.summonerName,
                 championId: participant.championId,
                 role: participant.role,
-                tier: participant.tier,
-                division: participant.division,
+
             };
         })} />
     );
