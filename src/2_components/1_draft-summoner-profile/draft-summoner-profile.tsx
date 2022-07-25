@@ -15,6 +15,11 @@ const useStyles = makeStyles((theme) => ({
         backgroundColor: theme.palette.elevation.e2,
         borderRadius: "8px",
     },
+    box: {
+        display: "flex",
+        justifyContent: "space-between",
+        paddingRight: theme.spacing(3),
+    },
     summonerData: {
         display: "flex",
         flexDirection: "column",
@@ -72,21 +77,21 @@ export interface DraftSummonerProfileProps {
 // - If winrate is >= 50, it's positive and displayed in our primary color, otherwise is negative and displayed in text primary
 
 export const DraftSummonerProfile: React.FC<DraftSummonerProfileProps> = ({
-                                                                              profile: {
-                                                                                  summonerName,
-                                                                                  winrate,
-                                                                                  gamesPlayed,
+          profile: {
+              summonerName,
+              winrate,
+              gamesPlayed,
 
-                                                                                  tier,
-                                                                                  division,
+              tier,
+              division,
 
-                                                                                  role,
-                                                                                  roleProfile,
+              role,
+              roleProfile,
 
-                                                                                  championId,
-                                                                                  championProfile,
-                                                                              },
-                                                                          }) => {
+              championId,
+              championProfile,
+          },
+      }) => {
     const classes = useStyles();
 
     const {
@@ -104,7 +109,7 @@ export const DraftSummonerProfile: React.FC<DraftSummonerProfileProps> = ({
     const roleIsPositive = roleProfile?.winrate >= 50;
 
     return (
-        <Card width={500}>
+        <Card width={400}>
             <div className={classes.root}>
                 {/* CHAMPION IMAGE */}
                 {!hasChampion && (
@@ -126,187 +131,189 @@ export const DraftSummonerProfile: React.FC<DraftSummonerProfileProps> = ({
                         className={classes.championImg}
                     />
                 )}
-                {/* SUMMONER NAME */}
-                <div className={classes.summonerData}>
-                    <Typography
-                        variant="textMain"
-                        paragraph
-                        color="textSecondary"
-                        weight="medium"
-                        mt={0}
-                        mb={0}
-                    >
-                        {summonerName}
-                    </Typography>
-
-                    {/* SUMMONER DATA */}
-                    {hasProfile && (
+                <div className={classes.box}>
+                    {/* SUMMONER NAME */}
+                    <div className={classes.summonerData}>
                         <Typography
                             variant="textMain"
                             paragraph
-                            color={winrateIsPositive ? "primary" : "textPrimary"}
+                            color="textSecondary"
                             weight="medium"
+                            mt={0}
+                            mb={0}
                         >
+                            {summonerName}
+                        </Typography>
+
+                        {/* SUMMONER DATA */}
+                        {hasProfile && (
+                            <Typography
+                                variant="textMain"
+                                paragraph
+                                color={winrateIsPositive ? "primary" : "textPrimary"}
+                                weight="medium"
+                            >
               <span>
                 {Math.round((winrate + Number.EPSILON) * 100) / 100}% wr
               </span>
-                            <span className={classes.summonerDataPrimary}>
+                                <span className={classes.summonerDataPrimary}>
                 {getTierDivisionName(tier, division)}
               </span>
-                            <span className={classes.summonerDataSecondary}>
+                                <span className={classes.summonerDataSecondary}>
                 {gamesPlayed} games
               </span>
-                        </Typography>
+                            </Typography>
+                        )}
+                        {!hasProfile && (
+                            <Typography
+                                variant="textMain"
+                                paragraph
+                                color="textSecondary"
+                                weight="medium"
+                                mt={0}
+                                mb={0}
+                            >
+                                No Data
+                            </Typography>
+                        )}
+                    </div>
+                    {/* SUMMONER ROLE */}
+                    {hasRole && !hasChampion && (
+                        <div className={classes.summonerData}>
+                            <Typography
+                                variant="textMain"
+                                paragraph
+                                color="textSecondary"
+                                weight="medium"
+                                mt={0}
+                                mb={0}
+                            >
+                                {hasRole ? `as ${getRoleName(role)}` : ""}
+                            </Typography>
+
+                            {/* SUMMONER ROLE DATA */}
+
+                            {roleProfile && (
+                                <div>
+                                    <Typography
+                                        variant="textMain"
+                                        paragraph
+                                        color={roleIsPositive ? "primary" : "textPrimary"}
+                                        weight="medium"
+                                        mt={0}
+                                        mb={0}
+                                    >
+                                        {Math.round((roleProfile.winrate + Number.EPSILON) * 100) /
+                                            100}
+                                        % wr
+                                    </Typography>
+                                    <Typography
+                                        variant="textMain"
+                                        paragraph
+                                        color="textPrimary"
+                                        weight="medium"
+                                        mt={0}
+                                        mb={0}
+                                    >
+                                        {Math.round((roleProfile.kda + Number.EPSILON) * 100) / 100}{" "}
+                                        kda
+                                    </Typography>
+                                    <Typography
+                                        variant="textMain"
+                                        paragraph
+                                        color="textSecondary"
+                                        weight="medium"
+                                        mt={0}
+                                        mb={0}
+                                        className={classes.summonerDataSecondary}
+                                    >
+                                        {roleProfile.gamesPlayed} games
+                                    </Typography>
+                                </div>
+                            )}
+
+                            {hasRole && !roleProfile && (
+                                <Typography
+                                    variant="textMain"
+                                    paragraph
+                                    color="textSecondary"
+                                    weight="medium"
+                                    mt={0}
+                                    mb={0}
+                                >
+                                    no data
+                                </Typography>
+                            )}
+                        </div>
                     )}
-                    {!hasProfile && (
-                        <Typography
-                            variant="textMain"
-                            paragraph
-                            color="textSecondary"
-                            weight="medium"
-                            mt={0}
-                            mb={0}
-                        >
-                            No Data
-                        </Typography>
+                    {/* SUMMONER CHAMPION */}
+                    {hasChampion && hasRole && (
+                        <div className={classes.summonerData}>
+                            <Typography
+                                variant="textMain"
+                                paragraph
+                                color="textSecondary"
+                                weight="medium"
+                                mt={0}
+                                mb={0}
+                            >
+                                {hasChampion ? `on ${getChampionName(championId)}` : ""}
+                            </Typography>
+                            {championProfile && (
+                                <div>
+                                    <Typography
+                                        variant="textMain"
+                                        paragraph
+                                        color={roleIsPositive ? "primary" : "textPrimary"}
+                                        weight="medium"
+                                        mt={0}
+                                        mb={0}
+                                    >
+                                        {Math.round(
+                                            (championProfile.winrate + Number.EPSILON) * 100
+                                        ) / 100}
+                                        % wr
+                                    </Typography>
+                                    <Typography
+                                        variant="textMain"
+                                        paragraph
+                                        color="textPrimary"
+                                        weight="medium"
+                                        mt={0}
+                                        mb={0}
+                                    >
+                                        {Math.round((championProfile.kda + Number.EPSILON) * 100) /
+                                            100}{" "}
+                                        kda
+                                    </Typography>
+                                    <Typography
+                                        variant="textMain"
+                                        paragraph
+                                        color="textSecondary"
+                                        weight="medium"
+                                        mt={0}
+                                        mb={0}
+                                        className={classes.summonerDataSecondary}
+                                    >
+                                        {championProfile?.gamesPlayed} games
+                                    </Typography>
+                                </div>
+                            )}
+                            {!championProfile && (
+                                <Typography
+                                    variant="textMain"
+                                    paragraph
+                                    color="textSecondary"
+                                    weight="medium"
+                                    mt={0}
+                                    mb={0}
+                                >
+                                    no data
+                                </Typography>
+                            )}
+                        </div>
                     )}
                 </div>
-                {/* SUMMONER ROLE */}
-                {hasRole && !hasChampion && (
-                    <div className={classes.summonerData}>
-                        <Typography
-                            variant="textMain"
-                            paragraph
-                            color="textSecondary"
-                            weight="medium"
-                            mt={0}
-                            mb={0}
-                        >
-                            {hasRole ? `as ${getRoleName(role)}` : ""}
-                        </Typography>
-
-                        {/* SUMMONER ROLE DATA */}
-
-                        {roleProfile && (
-                            <div>
-                                <Typography
-                                    variant="textMain"
-                                    paragraph
-                                    color={roleIsPositive ? "primary" : "textPrimary"}
-                                    weight="medium"
-                                    mt={0}
-                                    mb={0}
-                                >
-                                    {Math.round((roleProfile.winrate + Number.EPSILON) * 100) /
-                                        100}
-                                    % wr
-                                </Typography>
-                                <Typography
-                                    variant="textMain"
-                                    paragraph
-                                    color="textPrimary"
-                                    weight="medium"
-                                    mt={0}
-                                    mb={0}
-                                >
-                                    {Math.round((roleProfile.kda + Number.EPSILON) * 100) / 100}{" "}
-                                    kda
-                                </Typography>
-                                <Typography
-                                    variant="textMain"
-                                    paragraph
-                                    color="textSecondary"
-                                    weight="medium"
-                                    mt={0}
-                                    mb={0}
-                                    className={classes.summonerDataSecondary}
-                                >
-                                    {roleProfile.gamesPlayed} games
-                                </Typography>
-                            </div>
-                        )}
-
-                        {hasRole && !roleProfile && (
-                            <Typography
-                                variant="textMain"
-                                paragraph
-                                color="textSecondary"
-                                weight="medium"
-                                mt={0}
-                                mb={0}
-                            >
-                                no data
-                            </Typography>
-                        )}
-                    </div>
-                )}
-                {/* SUMMONER CHAMPION */}
-                {hasChampion && hasRole && (
-                    <div className={classes.summonerData}>
-                        <Typography
-                            variant="textMain"
-                            paragraph
-                            color="textSecondary"
-                            weight="medium"
-                            mt={0}
-                            mb={0}
-                        >
-                            {hasChampion ? `on ${getChampionName(championId)}` : ""}
-                        </Typography>
-                        {championProfile && (
-                            <div>
-                                <Typography
-                                    variant="textMain"
-                                    paragraph
-                                    color={roleIsPositive ? "primary" : "textPrimary"}
-                                    weight="medium"
-                                    mt={0}
-                                    mb={0}
-                                >
-                                    {Math.round(
-                                        (championProfile.winrate + Number.EPSILON) * 100
-                                    ) / 100}
-                                    % wr
-                                </Typography>
-                                <Typography
-                                    variant="textMain"
-                                    paragraph
-                                    color="textPrimary"
-                                    weight="medium"
-                                    mt={0}
-                                    mb={0}
-                                >
-                                    {Math.round((championProfile.kda + Number.EPSILON) * 100) /
-                                        100}{" "}
-                                    kda
-                                </Typography>
-                                <Typography
-                                    variant="textMain"
-                                    paragraph
-                                    color="textSecondary"
-                                    weight="medium"
-                                    mt={0}
-                                    mb={0}
-                                    className={classes.summonerDataSecondary}
-                                >
-                                    {championProfile?.gamesPlayed} games
-                                </Typography>
-                            </div>
-                        )}
-                        {!championProfile && (
-                            <Typography
-                                variant="textMain"
-                                paragraph
-                                color="textSecondary"
-                                weight="medium"
-                                mt={0}
-                                mb={0}
-                            >
-                                no data
-                            </Typography>
-                        )}
-                    </div>
-                )}
             </div>
         </Card>
     );

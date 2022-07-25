@@ -4,8 +4,11 @@ import { DraftSummonerProfiles } from '../2_components/2_draft-summoner-profiles
 import { Client } from '../common/league';
 import { ParticipantProfilesQueryData, PARTICIPANT_PROFILES_QUERY } from './participant-profiles.graphql-queries';
 import { GetParticipantProfilesInput } from './participant-profiles.graphql-types';
+import {Card} from "../common/core/components";
 
 export interface Participant {
+    division: Client.Division;
+    tier: Client.Tier;
     summonerName: string;
     role?: Client.Role;
     championId?: Client.ChampionId;
@@ -43,11 +46,31 @@ export const ParticipantProfiles: React.FC<ParticipantProfilesProps> = ({
     });
     console.debug(`ParticipantProfilesView_useQuery`, loading, error, data);
 
+    if (error) {
+        return <div>
+            <Card>
+                <h1>Error</h1>
+                <pre>{JSON.stringify(error, null, 2)}</pre>
+            </Card>
+        </div>;
+    }
+    if (loading) {
+        return <div>
+            <Card>
+                <h1>Loading Data, Please wait...</h1>
+            </Card>
+        </div>;
+    }
+
     return (
         <DraftSummonerProfiles profiles={participants.map(participant => {
             // TODO: Match the participant with one of the profiles from the query data
             return {
-                summonerName: participant.summonerName
+                summonerName: participant.summonerName,
+                championId: participant.championId,
+                role: participant.role,
+                tier: participant.tier,
+                division: participant.division,
             };
         })} />
     );
